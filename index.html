@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+  <title>YT</title>
+  <style>
+    /* RESET */
+    * { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" }
+    html,body,h1,h2,h3,h4,h5,h6 { margin: 0; padding: 0; }
+
+    /* CONTROLS */
+  </style>
+</head>
+<body>
+  <div id="player"></div>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    function onYouTubeIframeAPIReady() {
+      new YT.Player("player", {
+        events: { onReady },
+        videoId: "XSHvXGf_WXg", // TODO
+        width: window.innerWidth,
+        height: window.innerHeight,
+        playerVars: { controls: 0, disablekb: 1, modestbranding: 1 },
+      });
+    }
+
+    function onReady(event) {
+      Promise.all([ load(event.target), navigator.requestMIDIAccess() ]).then(function() {
+        console.log("Loaded!");
+        const [ player, midi ] = arguments[0];
+        window.addEventListener("keydown", event => onFakeMidi(event, player, 144, 100));
+        window.addEventListener("keyup", event => onFakeMidi(event, player, 128, 0));
+        for(var input of midi.inputs.values())
+          input.onmidimessage = event => onMidi(player, Array.from(event.data), event.timeStamp);
+      });
+    }
+
+    // It seems there's no explicit way to load a video,
+    // so instead we mute the video and start playing it immediately.
+    // YouTube will lazily load the video as it plays,
+    // which is why we select the fastest playback rate allowed.
+    function load(player) {
+      const rates = player.getAvailablePlaybackRates();
+      player.setPlaybackRate(rates[rates.length - 1]);
+      player.mute();
+      player.playVideo();
+      return new Promise(function(resolve) {
+        (function loop() {
+          if (player.getVideoLoadedFraction() < 1) {
+            setTimeout(loop, 1000)
+          } else {
+            // Undo everything before yielding
+            player.pauseVideo()
+            player.seekTo(0);
+            player.setPlaybackRate(1);
+            player.unMute();
+            resolve(player);
+          }
+        })();
+      });
+    }
+
+    // Use the keyboard as a backup MIDI controller — GarageBand layout
+    const keys = [ "a", "w", "s", "e", "d", "f", "t", "g", "y", "h", "u", "j"];
+    function onFakeMidi(event, player, status, velocity) {
+      const index = keys.indexOf(event.key);
+      if (index !== -1 && !event.repeat)
+        onMidi(player, [ status, index, velocity ], performance.now());
+    }
+
+    // Make it a playable instrument!
+    var count = 0;
+    const notes = [ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" ];
+    function onMidi(player, data, time) {
+      if (data.length === 3 && data[0] >> 4 === 8) {
+        // NOTE OFF
+        count--;
+        if (count <= 0) player.pauseVideo();
+      } else if (data.length === 3 && data[0] >> 4 === 9) {
+        // NOTE ON
+        count++;
+        const t = player.getDuration() * (data[1] % 12) / 12;
+        player.seekTo(t);
+        player.playVideo();
+      }
+    }
+  </script>
+</body>
+</html>
+
