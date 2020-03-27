@@ -9,29 +9,92 @@
     * { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" }
     html,body,h1,h2,h3,h4,h5,h6 { margin: 0; padding: 0; }
 
-    /* CONTROLS */
+    /* THEME */
+    body {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    .error {
+      padding: 20px;
+      background: darkred;
+      color: white;
+      font-weight: bold;
+      font-family: monospace;
+    }
+    .controls {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap-reverse;
+      justify-content: space-between;
+    }
+    .controls input {
+      width: 24%;
+    }
+
+    /* embedresponsively.com */
+    .player {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      max-width: 100%;
+    }
+    .player iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
   </style>
 </head>
 <body>
-  <div id="player"></div>
+  <div class="player"><div id="player"></div></div>
+  <div class="error hidden"></div>
+  <div class="controls hidden">
+    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="C"  data-note="C" >
+    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="C#" data-note="C#">
+    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="D"  data-note="D" >
+    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="D#" data-note="D#">
+    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="E"  data-note="E" >
+    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="F"  data-note="F" >
+    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="F#" data-note="F#">
+    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="G"  data-note="G" >
+    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="G#" data-note="G#">
+    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="A"  data-note="A" >
+    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="A#" data-note="A#">
+    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="B"  data-note="B" >
+  </div>
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
     function onYouTubeIframeAPIReady() {
       new YT.Player("player", {
-        events: { onReady },
-        videoId: "XSHvXGf_WXg", // TODO
+        events: { onError, onReady },
+        videoId: "_AVxxcRRshU", // TODO
         width: window.innerWidth,
         height: window.innerHeight,
-        playerVars: { controls: 0, disablekb: 1, modestbranding: 1 },
+        playerVars: { disablekb: 1, modestbranding: 1 },
       });
     }
 
+    function onError(event) {
+      const message = document.querySelector(".error");
+      message.classList.remove("hidden");
+      message.innerText = "ERROR: " + event.data;
+    }
+
     function onReady(event) {
-      Promise.all([ load(event.target), navigator.requestMIDIAccess() ]).then(function() {
-        console.log("Loaded!");
-        const [ player, midi ] = arguments[0];
-        window.addEventListener("keydown", event => onFakeMidi(event, player, 144, 100));
-        window.addEventListener("keyup", event => onFakeMidi(event, player, 128, 0));
+      const player = event.target;
+      setup(player);
+      document.querySelector(".controls").classList.remove("hidden");
+      window.addEventListener("keydown", event => onFakeMidi(event, player, 144, 100));
+      window.addEventListener("keyup", event => onFakeMidi(event, player, 128, 0));
+      navigator.requestMIDIAccess().then(function(midi) {
         for(var input of midi.inputs.values())
           input.onmidimessage = event => onMidi(player, Array.from(event.data), event.timeStamp);
       });
@@ -41,25 +104,11 @@
     // so instead we mute the video and start playing it immediately.
     // YouTube will lazily load the video as it plays,
     // which is why we select the fastest playback rate allowed.
-    function load(player) {
+    function setup(player) {
       const rates = player.getAvailablePlaybackRates();
       player.setPlaybackRate(rates[rates.length - 1]);
       player.mute();
       player.playVideo();
-      return new Promise(function(resolve) {
-        (function loop() {
-          if (player.getVideoLoadedFraction() < 1) {
-            setTimeout(loop, 1000)
-          } else {
-            // Undo everything before yielding
-            player.pauseVideo()
-            player.seekTo(0);
-            player.setPlaybackRate(1);
-            player.unMute();
-            resolve(player);
-          }
-        })();
-      });
     }
 
     // Use the keyboard as a backup MIDI controller — GarageBand layout
@@ -72,17 +121,18 @@
 
     // Make it a playable instrument!
     var count = 0;
-    const notes = [ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" ];
+    const notes = document.querySelectorAll("[data-note]");
     function onMidi(player, data, time) {
       if (data.length === 3 && data[0] >> 4 === 8) {
         // NOTE OFF
         count--;
-        if (count <= 0) player.pauseVideo();
+        if (count <= 0) player.mute();
       } else if (data.length === 3 && data[0] >> 4 === 9) {
         // NOTE ON
         count++;
-        const t = player.getDuration() * (data[1] % 12) / 12;
-        player.seekTo(t);
+        player.setPlaybackRate(1);
+        player.seekTo(notes[data[1] % 12].value);
+        player.unMute();
         player.playVideo();
       }
     }
