@@ -4,25 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
   <link rel="stylesheet" type="text/css" href="/style.css">
-  <title>YT</title>
+  <title>YT — mono</title>
 </head>
 <body>
-  <div class="player"><div id="player"></div></div>
-  <div class="error hidden"></div>
-  <div class="controls hidden">
-    <article data-note="C" ><input></article>
-    <article data-note="C#"><input></article>
-    <article data-note="D" ><input></article>
-    <article data-note="D#"><input></article>
-    <article data-note="E" ><input></article>
-    <article data-note="F" ><input></article>
-    <article data-note="F#"><input></article>
-    <article data-note="G" ><input></article>
-    <article data-note="G#"><input></article>
-    <article data-note="A" ><input></article>
-    <article data-note="A#"><input></article>
-    <article data-note="B" ><input></article>
-  </div>
+  <main>
+    <h1>YT — <span>mono<span></h1>
+    <hr>
+    <ol>
+      <li>
+        <p>Paste a YouTube video ID</p>
+        <div class="search">
+          <label>youtube.com/watch?v=<input placeholder="_AVxxcRRshU"></label>
+        </div>
+      </li>
+      <li>
+        <p>Buffering...</p>
+        <div class="player"><div id="player"></div></div>
+      </li>
+      <li>
+        <p>Map notes to time codes (in seconds)</p>
+        <div class="controls">
+          <article data-note="C" ><input></article>
+          <article data-note="C#"><input></article>
+          <article data-note="D" ><input></article>
+          <article data-note="D#"><input></article>
+          <article data-note="E" ><input></article>
+          <article data-note="F" ><input></article>
+          <article data-note="F#"><input></article>
+          <article data-note="G" ><input></article>
+          <article data-note="G#"><input></article>
+          <article data-note="A" ><input></article>
+          <article data-note="A#"><input></article>
+          <article data-note="B" ><input></article>
+        </div>
+      </li>
+    </ol>
+  </main>
   <script src="/script.js"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
 </body>

@@ -1,7 +1,10 @@
+const search = document.querySelector(".search input");
+const params = new URLSearchParams(location.search);
 function onYouTubeIframeAPIReady() {
+  search.value = params.get("id");
   new YT.Player("player", {
-    events: { onReady },
-    videoId: "_AVxxcRRshU", // TODO
+    events: { onReady, onError: x => console.log(x.data) },
+    videoId: params.get("id") || search.placeholder,
     playerVars: { disablekb: 1, modestbranding: 1 },
   });
 }
@@ -24,7 +27,12 @@ const inputs = document.querySelectorAll("[data-note] input");
 function loadControls(player) {
   const unit = player.getDuration() / 12;
   inputs.forEach((x, i) => x.placeholder = (i * unit).toFixed(1));
-  document.querySelector(".controls").classList.remove("hidden");
+  search.addEventListener("input", function(event) {
+    const id = event.target.value || event.target.placeholder;
+    player.loadVideoById(id);
+    params.set("id", id);
+    window.history.replaceState(null, null, "?" + params.toString());
+  });
 }
 
 function setupMidiListeners(player) {
@@ -56,6 +64,7 @@ function onMidi(player, data, time) {
     input.parentNode.classList.remove("pressed");
     if (!Object.values(hold).includes(true))
       player.mute();
+
   } else if (data.length === 3 && data[0] >> 4 === 9) {
     // NOTE ON
     const note = toNote(data[1]);
@@ -63,7 +72,7 @@ function onMidi(player, data, time) {
     hold[note] = true;
 
     input.parentNode.classList.add("pressed");
-    player.seekTo(getValue(input));
+    player.seekTo(getValue(input), true);
     player.unMute();
     player.playVideo();
   }

@@ -1,30 +1,41 @@
 /* RESET */
 * { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" }
-html,body,h1,h2,h3,h4,h5,h6 { margin: 0; padding: 0; }
+html,body,h1,h2,h3,h4,h5,h6,p { margin: 0; padding: 0; }
 
 /* THEME */
 body {
   width: 100%;
   max-width: 640px;
   margin: 0 auto;
-  padding: 20px;
 }
-.hidden {
-  display: none;
+main {
+  margin: 20px;
 }
-.error {
-  padding: 20px;
-  background: darkred;
-  color: white;
+li {
+  padding-bottom: 32px;
+  font-size: 32px;
   font-weight: bold;
-  font-family: monospace;
+}
+li p {
+  font-weight: 100;
+}
+input {
+  max-width: 80%;
+  text-align: center;
+  background: transparent;
+  border: none;
+  border-bottom: solid 1px grey;
+  font-size: 16px;
+}
+.search {
+  font-weight: normal;
+  font-size: 16px;
 }
 .controls {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap-reverse;
   justify-content: center;
-  padding-top: 20px;
 }
 .controls article, .player {
   border-radius: 5px;
@@ -52,14 +63,6 @@ body {
   color: grey;
   padding: 25% 0 10%;
   font-weight: bold;
-  font-size: 16px;
-}
-.controls input {
-  width: 80%;
-  text-align: center;
-  background: transparent;
-  border: none;
-  border-bottom: solid 1px grey;
   font-size: 16px;
 }
 .controls article.pressed {
