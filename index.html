@@ -38,12 +38,12 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     }
     .controls article {
+      margin: 1%;
       background: white;
       transform: scale3d(1, 1, 1);
       transition: all 150ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
       /* SQUARE */
-      margin: 1%;
       width: 20%;
       height: 0;
       padding-bottom: 20%;
@@ -158,8 +158,7 @@
     const inputs = document.querySelectorAll("[data-note] input");
     function loadControls(player) {
       const unit = player.getDuration() / 12;
-      for (var i = 0; i < inputs.length; i++)
-        inputs[i].placeholder = (i * unit).toFixed(1);
+      inputs.forEach((x, i) => x.placeholder = (i * unit).toFixed(1));
       document.querySelector(".controls").classList.remove("hidden");
     }
 
@@ -167,7 +166,7 @@
       window.addEventListener("keydown", event => onFakeMidi(event, player, 144, 100));
       window.addEventListener("keyup", event => onFakeMidi(event, player, 128, 0));
       navigator.requestMIDIAccess().then(function(midi) {
-        for(var input of midi.inputs.values())
+        for(const input of midi.inputs.values())
           input.onmidimessage = event => onMidi(player, Array.from(event.data), event.timeStamp);
       });
     }
