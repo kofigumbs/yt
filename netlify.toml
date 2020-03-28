@@ -1,0 +1,8 @@
+[build]
+  command = "./deploy.rb"
+  publish = "build"
+
+[[redirects]]
+  from = "/favicon.ico"
+  to = "https://kofi.sexy/favicon.ico"
+  status = 200
