@@ -2,6 +2,10 @@
 * { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" }
 html,body,h1,h2,h3,h4,h5,h6,p { margin: 0; padding: 0; }
 
+/* FONT SIZES */
+h1, li { font-size: 32px }
+label, input { font-size: 16px }
+
 /* THEME */
 body {
   width: 100%;
@@ -11,25 +15,26 @@ body {
 main {
   margin: 20px;
 }
-li {
-  padding-bottom: 32px;
-  font-size: 32px;
+hr, input {
+  border: none;
+  border-bottom: solid 1px grey;
+}
+input {
+  background: transparent;
+  text-align: center;
+}
+label {
+  display: block;
   font-weight: bold;
+  cursor: pointer;
+}
+li {
+  font-weight: bold;
+  padding-bottom: 32px;
 }
 li p {
   font-weight: 100;
-}
-input {
-  max-width: 80%;
-  text-align: center;
-  background: transparent;
-  border: none;
-  border-bottom: solid 1px grey;
-  font-size: 16px;
-}
-.search {
-  font-weight: normal;
-  font-size: 16px;
+  padding-bottom: 10px;
 }
 .controls {
   display: flex;
@@ -37,11 +42,11 @@ input {
   flex-wrap: wrap-reverse;
   justify-content: center;
 }
-.controls article, .player {
+.controls nav, .player {
   border-radius: 5px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
-.controls article {
+.controls nav {
   margin: 1%;
   background: white;
   transform: scale3d(1, 1, 1);
@@ -53,36 +58,45 @@ input {
   padding-bottom: 20%;
 
   /* LAYOUT */
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
 }
-.controls article::before {
-  content: attr(data-note);
-  color: grey;
-  padding: 25% 0 10%;
-  font-weight: bold;
-  font-size: 16px;
-}
-.controls article.pressed {
+.controls nav.pressed {
   transform: scale3d(.9, .9, 1);
   box-shadow: none;
 }
+.controls label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.controls input {
+  width: 60%;
+  margin-top: 10%;
+}
 
 /* SW-NE Gradient using alternating "100" values from https://material.io/design/color */
-.controls article.pressed:nth-child(0)  { background: #FFCDD2 }
-.controls article.pressed:nth-child(1),
-.controls article.pressed:nth-child(4)  { background: #E1BEE7 }
-.controls article.pressed:nth-child(2),
-.controls article.pressed:nth-child(5),
-.controls article.pressed:nth-child(8)  { background: #C5CAE9 }
-.controls article.pressed:nth-child(3),
-.controls article.pressed:nth-child(6),
-.controls article.pressed:nth-child(9)  { background: #B3E5FC }
-.controls article.pressed:nth-child(7),
-.controls article.pressed:nth-child(10) { background: #B2DFDB }
-.controls article.pressed:nth-child(11) { background: #DCEDC8 }
+.controls nav.pressed:nth-child(1)  { background: #FFCDD2 }
+.controls nav.pressed:nth-child(2),
+.controls nav.pressed:nth-child(5)  { background: #E1BEE7 }
+.controls nav.pressed:nth-child(3),
+.controls nav.pressed:nth-child(6),
+.controls nav.pressed:nth-child(9)  { background: #C5CAE9 }
+.controls nav.pressed:nth-child(4),
+.controls nav.pressed:nth-child(7),
+.controls nav.pressed:nth-child(10) { background: #B3E5FC }
+.controls nav.pressed:nth-child(8),
+.controls nav.pressed:nth-child(11) { background: #B2DFDB }
+.controls nav.pressed:nth-child(12) { background: #DCEDC8 }
 
 /* embedresponsively.com */
 .player {

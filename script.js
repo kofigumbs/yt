@@ -1,9 +1,10 @@
 const search = document.querySelector(".search input");
 const params = new URLSearchParams(location.search);
+search.value = params.get("id");
+
 function onYouTubeIframeAPIReady() {
-  search.value = params.get("id");
   new YT.Player("player", {
-    events: { onReady, onError: x => console.log(x.data) },
+    events: { onReady },
     videoId: params.get("id") || search.placeholder,
     playerVars: { disablekb: 1, modestbranding: 1 },
   });
@@ -23,7 +24,7 @@ function loadVideo(player) {
   player.playVideo();
 }
 
-const inputs = document.querySelectorAll("[data-note] input");
+const inputs = document.querySelectorAll(".controls input");
 function loadControls(player) {
   const unit = player.getDuration() / 12;
   inputs.forEach((x, i) => x.placeholder = (i * unit).toFixed(1));
@@ -38,10 +39,12 @@ function loadControls(player) {
 function setupMidiListeners(player) {
   window.addEventListener("keydown", event => onFakeMidi(event, player, 144, 100));
   window.addEventListener("keyup", event => onFakeMidi(event, player, 128, 0));
-  navigator.requestMIDIAccess().then(function(midi) {
-    for(const input of midi.inputs.values())
-      input.onmidimessage = event => onMidi(player, Array.from(event.data), event.timeStamp);
-  });
+  window.navigator
+    && typeof window.navigator.requestMIDIAccess === "function"
+    && navigator.requestMIDIAccess().then(function(midi) {
+      for(const input of midi.inputs.values())
+        input.onmidimessage = event => onMidi(player, Array.from(event.data), event.timeStamp);
+    });
 }
 
 // Use the keyboard as a backup MIDI controller — GarageBand layout
@@ -52,27 +55,28 @@ function onFakeMidi(event, player, status, velocity) {
     onMidi(player, [ status, index, velocity ], performance.now());
 }
 
+const holding = {};
+function hold(i, toggle) {
+  const note = i % 12;
+  holding[note] = toggle;
+  return note;
+}
+
 // Make it a playable instrument!
-const hold = {};
+const controls = document.querySelectorAll(".controls nav");
 function onMidi(player, data, time) {
   if (data.length === 3 && data[0] >> 4 === 8) {
     // NOTE OFF
-    const note = toNote(data[1]);
-    const input = inputs[note];
-    hold[note] = false;
-
-    input.parentNode.classList.remove("pressed");
-    if (!Object.values(hold).includes(true))
+    const note = hold(data[1], false);
+    controls[note].classList.remove("pressed");
+    if (!Object.values(holding).includes(true))
       player.mute();
 
   } else if (data.length === 3 && data[0] >> 4 === 9) {
     // NOTE ON
-    const note = toNote(data[1]);
-    const input = inputs[note];
-    hold[note] = true;
-
-    input.parentNode.classList.add("pressed");
-    player.seekTo(getValue(input), true);
+    const note = hold(data[1], true);
+    controls[note].classList.add("pressed");
+    player.seekTo(getValue(inputs[note]), true);
     player.unMute();
     player.playVideo();
   }
@@ -81,8 +85,4 @@ function onMidi(player, data, time) {
 function getValue(input) {
   const draft = parseFloat(input.value);
   return isNaN(draft) ? parseFloat(input.placeholder) : draft;
-}
-
-function toNote(i) {
-  return i % 12;
 }
