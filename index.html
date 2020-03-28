@@ -12,7 +12,7 @@
     /* THEME */
     body {
       width: 100%;
-      max-width: 720px;
+      max-width: 640px;
       margin: 0 auto;
       padding: 20px;
     }
@@ -30,11 +30,63 @@
       display: flex;
       flex-direction: row;
       flex-wrap: wrap-reverse;
+      justify-content: center;
+      padding-top: 20px;
+    }
+    .controls article, .player {
+      border-radius: 5px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+    .controls article {
+      background: white;
+      transform: scale3d(1, 1, 1);
+      transition: all 150ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+      /* SQUARE */
+      margin: 1%;
+      width: 20%;
+      height: 0;
+      padding-bottom: 20%;
+
+      /* LAYOUT */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       justify-content: space-between;
     }
-    .controls input {
-      width: 24%;
+    .controls article::before {
+      content: attr(data-note);
+      color: grey;
+      padding: 25% 0 10%;
+      font-weight: bold;
+      font-size: 16px;
     }
+    .controls input {
+      width: 80%;
+      text-align: center;
+      background: transparent;
+      border: none;
+      border-bottom: solid 1px grey;
+      font-size: 16px;
+    }
+    .controls article.pressed {
+      transform: scale3d(.9, .9, 1);
+      box-shadow: none;
+    }
+
+    /* SW-NE Gradient using alternating "100" values from https://material.io/design/color */
+    .controls article.pressed:nth-child(0)  { background: #FFCDD2 }
+    .controls article.pressed:nth-child(1),
+    .controls article.pressed:nth-child(4)  { background: #E1BEE7 }
+    .controls article.pressed:nth-child(2),
+    .controls article.pressed:nth-child(5),
+    .controls article.pressed:nth-child(8)  { background: #C5CAE9 }
+    .controls article.pressed:nth-child(3),
+    .controls article.pressed:nth-child(6),
+    .controls article.pressed:nth-child(9)  { background: #B3E5FC }
+    .controls article.pressed:nth-child(7),
+    .controls article.pressed:nth-child(10) { background: #B2DFDB }
+    .controls article.pressed:nth-child(11) { background: #DCEDC8 }
 
     /* embedresponsively.com */
     .player {
@@ -57,18 +109,18 @@
   <div class="player"><div id="player"></div></div>
   <div class="error hidden"></div>
   <div class="controls hidden">
-    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="C"  data-note="C" >
-    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="C#" data-note="C#">
-    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="D"  data-note="D" >
-    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="D#" data-note="D#">
-    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="E"  data-note="E" >
-    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="F"  data-note="F" >
-    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="F#" data-note="F#">
-    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="G"  data-note="G" >
-    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="G#" data-note="G#">
-    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="A"  data-note="A" >
-    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="A#" data-note="A#">
-    <input type="text" inputmode="numeric" pattern="\d+:\d{2}(\.\d+)?" placeholder="B"  data-note="B" >
+    <article data-note="C" ><input></article>
+    <article data-note="C#"><input></article>
+    <article data-note="D" ><input></article>
+    <article data-note="D#"><input></article>
+    <article data-note="E" ><input></article>
+    <article data-note="F" ><input></article>
+    <article data-note="F#"><input></article>
+    <article data-note="G" ><input></article>
+    <article data-note="G#"><input></article>
+    <article data-note="A" ><input></article>
+    <article data-note="A#"><input></article>
+    <article data-note="B" ><input></article>
   </div>
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
@@ -76,8 +128,6 @@
       new YT.Player("player", {
         events: { onError, onReady },
         videoId: "_AVxxcRRshU", // TODO
-        width: window.innerWidth,
-        height: window.innerHeight,
         playerVars: { disablekb: 1, modestbranding: 1 },
       });
     }
@@ -89,26 +139,37 @@
     }
 
     function onReady(event) {
-      const player = event.target;
-      setup(player);
-      document.querySelector(".controls").classList.remove("hidden");
-      window.addEventListener("keydown", event => onFakeMidi(event, player, 144, 100));
-      window.addEventListener("keyup", event => onFakeMidi(event, player, 128, 0));
-      navigator.requestMIDIAccess().then(function(midi) {
-        for(var input of midi.inputs.values())
-          input.onmidimessage = event => onMidi(player, Array.from(event.data), event.timeStamp);
-      });
+      loadVideo(event.target);
+      loadControls(event.target);
+      setupMidiListeners(event.target);
     }
 
     // It seems there's no explicit way to load a video,
     // so instead we mute the video and start playing it immediately.
     // YouTube will lazily load the video as it plays,
     // which is why we select the fastest playback rate allowed.
-    function setup(player) {
+    function loadVideo(player) {
       const rates = player.getAvailablePlaybackRates();
       player.setPlaybackRate(rates[rates.length - 1]);
       player.mute();
       player.playVideo();
+    }
+
+    const inputs = document.querySelectorAll("[data-note] input");
+    function loadControls(player) {
+      const unit = player.getDuration() / 12;
+      for (var i = 0; i < inputs.length; i++)
+        inputs[i].placeholder = (i * unit).toFixed(1);
+      document.querySelector(".controls").classList.remove("hidden");
+    }
+
+    function setupMidiListeners(player) {
+      window.addEventListener("keydown", event => onFakeMidi(event, player, 144, 100));
+      window.addEventListener("keyup", event => onFakeMidi(event, player, 128, 0));
+      navigator.requestMIDIAccess().then(function(midi) {
+        for(var input of midi.inputs.values())
+          input.onmidimessage = event => onMidi(player, Array.from(event.data), event.timeStamp);
+      });
     }
 
     // Use the keyboard as a backup MIDI controller — GarageBand layout
@@ -120,21 +181,38 @@
     }
 
     // Make it a playable instrument!
-    var count = 0;
-    const notes = document.querySelectorAll("[data-note]");
+    const hold = {};
     function onMidi(player, data, time) {
       if (data.length === 3 && data[0] >> 4 === 8) {
         // NOTE OFF
-        count--;
-        if (count <= 0) player.mute();
+        const note = toNote(data[1]);
+        const input = inputs[note];
+        hold[note] = false;
+
+        input.parentNode.classList.remove("pressed");
+        if (!Object.values(hold).includes(true))
+          player.mute();
       } else if (data.length === 3 && data[0] >> 4 === 9) {
         // NOTE ON
-        count++;
+        const note = toNote(data[1]);
+        const input = inputs[note];
+        hold[note] = true;
+
+        input.parentNode.classList.add("pressed");
         player.setPlaybackRate(1);
-        player.seekTo(notes[data[1] % 12].value);
+        player.seekTo(getValue(input));
         player.unMute();
         player.playVideo();
       }
+    }
+
+    function getValue(input) {
+      const draft = parseFloat(input.value);
+      return isNaN(draft) ? parseFloat(input.placeholder) : draft;
+    }
+
+    function toNote(i) {
+      return i % 12;
     }
   </script>
 </body>
