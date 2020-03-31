@@ -56,14 +56,14 @@ ol {
   margin: 0;
   padding-left: 32px;
 }
-li > *:not(:first-child) {
-  margin-left: -32px;
+li {
+  padding-bottom: 32px;
 }
 li > *:first-child {
   margin-bottom: 10px;
 }
-li {
-  padding-bottom: 32px;
+li > *:not(:first-child) {
+  margin-left: -32px; /* Undo <ol> padding */
 }
 .hidden {
   display: none;
@@ -99,7 +99,6 @@ li {
 }
 .controls nav.pressed {
   transform: scale3d(.9, .9, 1);
-  box-shadow: none;
 }
 .controls label {
   position: absolute;
@@ -164,16 +163,17 @@ li {
   background: #B31217;
 }
 
-/* SW-NE Gradient using Red values from https://material.io/design/color */
-.controls nav.pressed:nth-child(1)  { background: #FFEBEE }
+/* SW-NE Gradient from YouTube palette colors
+   https://material.io/resources/color/#!/?view.left=1&view.right=1&primary.color=b31217&secondary.color=e52d27 */
+.controls nav.pressed:nth-child(1)  { box-shadow: 0 0 0 8px #FF6752 }
 .controls nav.pressed:nth-child(2),
-.controls nav.pressed:nth-child(5)  { background: #FFCDD2 }
+.controls nav.pressed:nth-child(5)  { box-shadow: 0 0 0 8px #EC4F40 }
 .controls nav.pressed:nth-child(3),
 .controls nav.pressed:nth-child(6),
-.controls nav.pressed:nth-child(9)  { background: #EF9A9A }
+.controls nav.pressed:nth-child(9)  { box-shadow: 0 0 0 8px #E52D27 }
 .controls nav.pressed:nth-child(4),
 .controls nav.pressed:nth-child(7),
-.controls nav.pressed:nth-child(10) { background: #E57373 }
+.controls nav.pressed:nth-child(10) { box-shadow: 0 0 0 8px #B31217 }
 .controls nav.pressed:nth-child(8),
-.controls nav.pressed:nth-child(11) { background: #EF5350 }
-.controls nav.pressed:nth-child(12) { background: #F44336 }
+.controls nav.pressed:nth-child(11) { box-shadow: 0 0 0 8px #AB0000 }
+.controls nav.pressed:nth-child(12) { box-shadow: 0 0 0 8px #7C0000 }
