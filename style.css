@@ -1,57 +1,42 @@
-html,body,h1,h2,h3,h4,h5,h6,ol,p { margin: 0; padding: 0 }
+html,body,h1,h2,h3,ol,p { margin: 0; padding: 0 }
 
 /* FONTS */
 * { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" }
-body, input { font-size: 16px }
-h1, li { font-size: 1.75rem }
-h1, a, b, label, li { font-weight: 800 !important }
+body, input, button { font-size: 16px }
+h1, h2, li, select { font-size: 1.75rem }
+h1, h2, li, select, a, b, button, label { font-weight: 800 !important }
 li > *:first-child { font-weight: 200 }
-h2, li > *:not(:first-child) { font-size: 1rem; font-weight: normal }
+h3, li > *:not(:first-child) { font-size: 1rem; font-weight: normal }
 
 /* SIDE-BY-SIDE */
 .left { height: 50vh }
-.right { overflow: scroll }
 @media only screen and (min-width: 720px) {
-  .left, .right {
+  .left {
     position: fixed;
     top: 0;
+    left: 0;
     width: 50%;
     height: 100%;
   }
-  .left {
-    left: 0;
-  }
   .right {
+    position: relative;
     left: 50%;
+    width: 50%;
   }
 }
 
-/* LAYOUT */
-h1 {
-  padding: 20px 0;
-  text-align: center;
+/* APP */
+main {
+  margin: 40px;
 }
-h1 * {
-  padding: 5px;
-  border-radius: 1em !important;
-}
-h1 nav {
-  display: inline;
-  background: #B31217;
-}
-h1 nav * {
-  padding: 0 15px;
-}
-h1 mark {
-  background: white;
-}
-h1 a {
-  color: white;
-  text-decoration: none;
-}
-h2 {
+h2, h3 {
   padding: 10px 0 20px;
-  text-align: center;
+}
+select {
+  padding: 5px;
+  background: #B31217;
+  color: white;
+  border: none;
 }
 input {
   border: none;
@@ -75,8 +60,8 @@ li > *:nth-child(1) {
 li > *:nth-child(2) {
   margin-top: 10px;
 }
-main {
-  margin: 0 40px;
+.hidden {
+  display: none;
 }
 .box {
   border-radius: 5px;
@@ -149,6 +134,29 @@ main {
 }
 .tweet svg {
   margin-right: 5px;
+}
+
+/* POLY */
+#poly input, #poly button {
+  display: block;
+  margin: 20px auto 0;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+#poly input {
+  font-style: italic;
+  padding: 10px 0;
+  background: rgba(255, 255, 255, .75);
+  border: none;
+  border-radius: 5px;
+  color: #B31217;
+}
+#poly button {
+  padding: 10px 20px;
+  cursor: pointer;
+  color: white;
+  background: #B31217;
 }
 
 /* SW-NE Gradient using alternating "100" values from https://material.io/design/color */

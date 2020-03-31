@@ -1,4 +1,5 @@
 const params = new URLSearchParams(location.search);
+const voices = document.querySelector("select");
 const left = document.querySelector(".left");
 const search = document.querySelector(".search input");
 const inputs = document.querySelectorAll(".controls input");
@@ -7,6 +8,12 @@ const holding = {};
 const keys = [ "a", "w", "s", "e", "d", "f", "t", "g", "y", "h", "u", "j" ];
 
 search.value = params.get("id");
+voices.addEventListener("change", function() {
+  for (const option of voices.children)
+    document
+      .getElementById(option.value)
+      .classList.toggle("hidden", !option.selected);
+});
 
 function onYouTubeIframeAPIReady() {
   new YT.Player("player", {
