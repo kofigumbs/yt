@@ -1,4 +1,5 @@
 const params = new URLSearchParams(location.search);
+const left = document.querySelector(".left");
 const search = document.querySelector(".search input");
 const inputs = document.querySelectorAll(".controls input");
 const controls = document.querySelectorAll(".controls nav");
@@ -10,6 +11,8 @@ search.value = params.get("id");
 function onYouTubeIframeAPIReady() {
   new YT.Player("player", {
     events: { onStateChange, onReady },
+    width: left.clientWidth,
+    height: left.clientHeight,
     videoId: params.get("id") || search.placeholder,
     playerVars: { disablekb: 1, modestbranding: 1 },
   });
@@ -25,9 +28,8 @@ function onStateChange(event) {
 
 function onReady(event) {
   const player = event.target;
-  const buffer = document.querySelector(".buffer");
   startBuffering(player);
-  setInterval(() => buffer.innerText = (player.getVideoLoadedFraction() * 100).toFixed(0), 1000);
+  window.addEventListener("resize", () => onResize(player));
 
   // Update URL and video on search change
   search.addEventListener("input", function(event) {
@@ -46,6 +48,10 @@ function onReady(event) {
       for(const input of midi.inputs.values())
         input.onmidimessage = event => onMidi(player, Array.from(event.data), event.timeStamp);
     });
+}
+
+function onResize(player) {
+  player.setSize(left.clientWidth, left.clientHeight);
 }
 
 // It seems there's no explicit way to load a video,
