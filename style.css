@@ -1,4 +1,4 @@
-html,body,h1,h2,h3,ol,p { margin: 0; padding: 0 }
+html,body,h1,h2,h3,p { margin: 0; padding: 0 }
 
 /* FONTS */
 * { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" }
@@ -52,15 +52,18 @@ label {
   display: block;
   cursor: pointer;
 }
+ol {
+  margin: 0;
+  padding-left: 32px;
+}
+li > *:not(:first-child) {
+  margin-left: -32px;
+}
+li > *:first-child {
+  margin-bottom: 10px;
+}
 li {
   padding-bottom: 32px;
-  list-style-position: inside;
-}
-li > *:nth-child(1) {
-  display: inline;
-}
-li > *:nth-child(2) {
-  margin-top: 10px;
 }
 .hidden {
   display: none;
@@ -161,16 +164,16 @@ li > *:nth-child(2) {
   background: #B31217;
 }
 
-/* SW-NE Gradient using alternating "100" values from https://material.io/design/color */
-.controls nav.pressed:nth-child(1)  { background: #FFCDD2 }
+/* SW-NE Gradient using Red values from https://material.io/design/color */
+.controls nav.pressed:nth-child(1)  { background: #FFEBEE }
 .controls nav.pressed:nth-child(2),
-.controls nav.pressed:nth-child(5)  { background: #E1BEE7 }
+.controls nav.pressed:nth-child(5)  { background: #FFCDD2 }
 .controls nav.pressed:nth-child(3),
 .controls nav.pressed:nth-child(6),
-.controls nav.pressed:nth-child(9)  { background: #C5CAE9 }
+.controls nav.pressed:nth-child(9)  { background: #EF9A9A }
 .controls nav.pressed:nth-child(4),
 .controls nav.pressed:nth-child(7),
-.controls nav.pressed:nth-child(10) { background: #B3E5FC }
+.controls nav.pressed:nth-child(10) { background: #E57373 }
 .controls nav.pressed:nth-child(8),
-.controls nav.pressed:nth-child(11) { background: #B2DFDB }
-.controls nav.pressed:nth-child(12) { background: #DCEDC8 }
+.controls nav.pressed:nth-child(11) { background: #EF5350 }
+.controls nav.pressed:nth-child(12) { background: #F44336 }
