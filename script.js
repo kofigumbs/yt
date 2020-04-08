@@ -89,7 +89,7 @@ function onMidi(player, data, time) {
     const note = hold(data[1], false);
     controls[note].classList.remove("pressed");
     if (!Object.values(holding).includes(true))
-      player.pause();
+      player.pauseVideo();
 
   } else if (data.length === 3 && data[0] >> 4 === 9) {
     // NOTE ON
