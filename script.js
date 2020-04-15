@@ -15,6 +15,12 @@ voices.addEventListener("change", function() {
       .classList.toggle("hidden", !option.selected);
 });
 
+for (const i of inputs) {
+  i.addEventListener("input", function() {
+    setParam(i.labels[0].innerText.replace("#", "s"), i.value);
+  });
+}
+
 function onYouTubeIframeAPIReady() {
   new YT.Player("player", {
     events: { onStateChange, onReady },
@@ -42,8 +48,7 @@ function onReady(event) {
   search.addEventListener("input", function(event) {
     player.loadVideoById(search.value || search.placeholder);
     startBuffering(player);
-    params.set("id", search.value);
-    window.history.replaceState(null, null, "?" + params.toString());
+    setParam("id", search.value);
   });
 
   // MIDI listeners
@@ -104,4 +109,9 @@ function onMidi(player, data, time) {
 function getValue(input) {
   const draft = parseFloat(input.value);
   return isNaN(draft) ? parseFloat(input.placeholder) : draft;
+}
+
+function setParam(key, value) {
+  value ? params.set(key, value) : params.delete(key);
+  window.history.replaceState(null, null, "?" + params.toString());
 }
