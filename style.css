@@ -115,6 +115,20 @@ li > *:not(:first-child) {
   width: 60%;
   margin-top: 10%;
 }
+.mobile {
+  margin-bottom: 20px;
+}
+.mobile textarea {
+  /* Based on
+   * https://github.com/jgthms/bulma/blob/f75ae3db01cb3be96dde517811f4950540f4c76f/sass/base/helpers.sass#L178-L186 */
+  border: none;
+  height: 0.01em;
+  overflow: hidden;
+  padding: 0;
+  white-space: nowrap;
+  width: 0.01em;
+  resize: none;
+}
 .play {
   padding: 40px;
   background: #B8BAB9;
@@ -131,7 +145,7 @@ li > *:not(:first-child) {
   color: white;
   margin-top: 20px;
 }
-.twitter, .instagram, .search {
+.twitter, .instagram, .search, .mobile {
   padding: 10px 15px;
   text-align: center;
 }
@@ -146,11 +160,13 @@ li > *:not(:first-child) {
 }
 
 /* POLY */
-#poly input, #poly button {
+#poly input, #poly button, #poly p {
   display: block;
   margin: 20px auto 0;
   width: 100%;
   box-sizing: border-box;
+}
+#poly input, #poly button {
   text-align: center;
 }
 #poly input {
