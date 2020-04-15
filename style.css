@@ -27,9 +27,9 @@ h3, li > *:not(:first-child) { font-size: 1rem; font-weight: normal }
 
 /* APP */
 main {
-  margin: 40px auto;
+  margin: 60px auto;
   padding: 0 30px;
-  max-width: 720px;
+  max-width: 500px;
 }
 h2, h3 {
   padding: 10px 0 20px;
@@ -122,22 +122,27 @@ li > *:not(:first-child) {
 .play img {
   width: 100%;
 }
-.tweet {
+.twitter, .instagram {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   text-decoration: none;
   color: white;
-  background: #55ACEE;
   margin-top: 20px;
 }
-.tweet, .search {
+.twitter, .instagram, .search {
   padding: 10px 15px;
   text-align: center;
 }
-.tweet svg {
+.twitter svg, .instagram svg {
   margin-right: 5px;
+}
+.twitter {
+  background: #55ACEE;
+}
+.instagram {
+  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
 }
 
 /* POLY */
