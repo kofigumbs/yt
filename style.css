@@ -23,6 +23,9 @@ h3, li > *:not(:first-child) { font-size: 1rem; font-weight: normal }
     left: 50%;
     width: 50%;
   }
+  .mobile {
+    display: none;
+  }
 }
 
 /* APP */
