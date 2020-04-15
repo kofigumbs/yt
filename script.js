@@ -62,11 +62,11 @@ function onResize(player) {
 }
 
 // It seems there's no explicit way to load a video,
-// so instead we start playing the video, then pause immediately
+// so instead we mute the video and start playing it immediately.
 // YouTube will lazily load the video as it plays.
 function startBuffering(player) {
+  player.mute();
   player.playVideo();
-  player.pauseVideo();
 }
 
 // Use the keyboard as a backup MIDI controller — GarageBand layout
@@ -89,13 +89,14 @@ function onMidi(player, data, time) {
     const note = hold(data[1], false);
     controls[note].classList.remove("pressed");
     if (!Object.values(holding).includes(true))
-      player.pauseVideo();
+      player.mute();
 
   } else if (data.length === 3 && data[0] >> 4 === 9) {
     // NOTE ON
     const note = hold(data[1], true);
     controls[note].classList.add("pressed");
     player.seekTo(getValue(inputs[note]), true);
+    player.unMute();
     player.playVideo();
   }
 }
