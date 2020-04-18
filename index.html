@@ -3,8 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+  <link rel="stylesheet" href="https://twcv.netlify.app/tachyons-with-css-variables.min.css"/>
+  <style>
+    iframe     { position: absolute }
+    :root      { --dark-red: #B31217 }
+    .twitter   { background: #55ACEE }
+    .instagram { background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%) }
+  </style>
+
   <title>YT—mono</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -13,68 +20,147 @@
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="theme-color" content="#ffffff">
 </head>
-<body>
-  <div class="left"><div id="player"></div></div>
-  <div class="right">
-    <main>
-      <h1>YT—<select><option selected>mono</option><option>poly</option></select></h1>
-      <div id="mono">
-        <h3>A monophonic sampler for <em>playing</em> YouTube as an instrument</h3>
-        <ol>
-          <li>
-            <p>Paste a YouTube video ID</p>
-            <label class="search box">youtu.be/<input placeholder="GxZuq57_bYM"></label>
-          </li>
-          <li>
-            <p>Assign notes to times (in&nbsp;seconds)</p>
-            <div class="controls">
-              <nav class="box"><label><span>C </span><input type="text" inputmode="numeric" pattern="\d*(\.\d+)?"></label></nav>
-              <nav class="box"><label><span>C#</span><input type="text" inputmode="numeric" pattern="\d*(\.\d+)?"></label></nav>
-              <nav class="box"><label><span>D </span><input type="text" inputmode="numeric" pattern="\d*(\.\d+)?"></label></nav>
-              <nav class="box"><label><span>D#</span><input type="text" inputmode="numeric" pattern="\d*(\.\d+)?"></label></nav>
-              <nav class="box"><label><span>E </span><input type="text" inputmode="numeric" pattern="\d*(\.\d+)?"></label></nav>
-              <nav class="box"><label><span>F </span><input type="text" inputmode="numeric" pattern="\d*(\.\d+)?"></label></nav>
-              <nav class="box"><label><span>F#</span><input type="text" inputmode="numeric" pattern="\d*(\.\d+)?"></label></nav>
-              <nav class="box"><label><span>G </span><input type="text" inputmode="numeric" pattern="\d*(\.\d+)?"></label></nav>
-              <nav class="box"><label><span>G#</span><input type="text" inputmode="numeric" pattern="\d*(\.\d+)?"></label></nav>
-              <nav class="box"><label><span>A </span><input type="text" inputmode="numeric" pattern="\d*(\.\d+)?"></label></nav>
-              <nav class="box"><label><span>A#</span><input type="text" inputmode="numeric" pattern="\d*(\.\d+)?"></label></nav>
-              <nav class="box"><label><span>B </span><input type="text" inputmode="numeric" pattern="\d*(\.\d+)?"></label></nav>
-            </div>
-          </li>
-          <li>
-            <p>Play! via MIDI or computer keyboard</p>
-            <label class="mobile box">Tap here to open mobile keyboard<textarea></textarea></label>
-            <div class="play box">
-              <img src="https://rc.kofi.sexy/visualizer/keyboard.png" alt="GarageBand keyboard layout">
-            </div>
-          </li>
-          <li>
-            <p>Share your work</p>
-            <p>
-              Use <b>YT—mono</b> however you'd like.
-              It's <a target="_blank" href="https://github.com/hkgumbs/yt">open source</a>.
-              If you find it fun to use or have any ideas, consider pinging me online:
+
+<body class="sans-serif">
+  <aside class="w-100 w-50-l h-100-l fixed-l pa0-l aspect-ratio--16x9"><div id="player"></div></aside>
+  <main  class="w-100 w-50-l h-100-l fr-l pa5">
+    <h1 class="f1 tc">YT—<select id="voices" class="white b bg-dark-red bn"><option selected>mono</option><option>poly</option></select></h1>
+    <div id="mono" class="mw6 center">
+      <details>
+        <summary class="pointer tc i mb2"><u>What is this?</u></summary>
+        <div class="relative">
+          <div class="absolute shadow-2 pa4 bg-white z-max">
+            <p class="mt0">
+              A monophonic sampler for <em>playing</em> a YouTube video like an instrument.
+              Hold notes by sending MIDI, typing on your computer keyboard, or pressing the 🎹 keys below.
             </p>
-            <a class="twitter box" target="_blank" href="https://twitter.com/hkgumbs">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
-              @hkgumbs
-            </a>
-            <a class="instagram box" target="_blank" href="https://instagram.com/hkgumbs">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-instagram"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-              @hkgumbs
-            </a>
-          </li>
-        </ol>
+            <p>
+              <b>YT—mono</b> is <a target="_blank" href="https://github.com/hkgumbs/yt">open source</a>!
+              If you enjoy using it, have any ideas, or make anything at all with it, consider pinging me online:
+            </p>
+            <p>
+              <a class="twitter no-underline b white flex items-center justify-center pa2 br2" target="_blank" href="https://twitter.com/hkgumbs">
+                <svg class="mr2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+                @hkgumbs
+              </a>
+            </p>
+            <p>
+              <a class="instagram no-underline b white flex items-center justify-center pa2 br2" target="_blank" href="https://instagram.com/hkgumbs">
+                <svg class="mr2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-instagram"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                @hkgumbs
+              </a>
+            </p>
+          </div>
+        </div>
+      </details>
+
+      <label class="flex items-center justify-center ma5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-youtube"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+        <span class="mh2">/</span>
+        <input id="search" class="bt-0 br-0 bl-0 bb-1 tc" placeholder="GxZuq57_bYM">
+      </label>
+
+      <div id="controls">
+        <div class="flex justify-center">
+          <nav class="br2 ma1 shadow-2 white bg-black-80 flex flex-column items-center pointer">
+            <span class="b mv4">W</span>
+            <label class="bt b--moon-gray tc flex flex-column items-center">
+              <svg class="pv1 o-20" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <input class="bn tc w3 white bg-transparent" type="text" inputmode="numeric" pattern="d*(.d+)?">
+            </label>
+          </nav>
+          <nav class="br2 ma1 shadow-2 white bg-black-80 flex flex-column items-center pointer">
+            <span class="b mv4">E</span>
+            <label class="bt b--moon-gray tc flex flex-column items-center">
+              <svg class="pv1 o-20" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <input class="bn tc w3 white bg-transparent" type="text" inputmode="numeric" pattern="d*(.d+)?">
+            </label>
+          </nav>
+          <span class="mh4"></span>
+          <nav class="br2 ma1 shadow-2 white bg-black-80 flex flex-column items-center pointer">
+            <span class="b mv4">T</span>
+            <label class="bt b--moon-gray tc flex flex-column items-center">
+              <svg class="pv1 o-20" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <input class="bn tc w3 white bg-transparent" type="text" inputmode="numeric" pattern="d*(.d+)?">
+            </label>
+          </nav>
+          <nav class="br2 ma1 shadow-2 white bg-black-80 flex flex-column items-center pointer">
+            <span class="b mv4">Y</span>
+            <label class="bt b--moon-gray tc flex flex-column items-center">
+              <svg class="pv1 o-20" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <input class="bn tc w3 white bg-transparent" type="text" inputmode="numeric" pattern="d*(.d+)?">
+            </label>
+          </nav>
+          <nav class="br2 ma1 shadow-2 white bg-black-80 flex flex-column items-center pointer">
+            <span class="b mv4">U</span>
+            <label class="bt b--moon-gray tc flex flex-column items-center">
+              <svg class="pv1 o-20" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <input class="bn tc w3 white bg-transparent" type="text" inputmode="numeric" pattern="d*(.d+)?">
+            </label>
+          </nav>
+        </div>
+
+        <div class="flex justify-center">
+          <nav class="br2 ma1 shadow-2 flex flex-column items-center pointer">
+            <span class="b mv4">A</span>
+            <label class="bt b--moon-gray tc">
+              <svg class="pv1 o-20" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <input class="bn tc w3" type="text" inputmode="numeric" pattern="d*(.d+)?">
+            </label>
+          </nav>
+          <nav class="br2 ma1 shadow-2 flex flex-column items-center pointer">
+            <span class="b mv4">S</span>
+            <label class="bt b--moon-gray tc">
+              <svg class="pv1 o-20" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <input class="bn tc w3" type="text" inputmode="numeric" pattern="d*(.d+)?">
+            </label>
+          </nav>
+          <nav class="br2 ma1 shadow-2 flex flex-column items-center pointer">
+            <span class="b mv4">D</span>
+            <label class="bt b--moon-gray tc">
+              <svg class="pv1 o-20" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <input class="bn tc w3" type="text" inputmode="numeric" pattern="d*(.d+)?">
+            </label>
+          </nav>
+          <nav class="br2 ma1 shadow-2 flex flex-column items-center pointer">
+            <span class="b mv4">F</span>
+            <label class="bt b--moon-gray tc">
+              <svg class="pv1 o-20" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <input class="bn tc w3" type="text" inputmode="numeric" pattern="d*(.d+)?">
+            </label>
+          </nav>
+          <nav class="br2 ma1 shadow-2 flex flex-column items-center pointer">
+            <span class="b mv4">G</span>
+            <label class="bt b--moon-gray tc">
+              <svg class="pv1 o-20" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <input class="bn tc w3" type="text" inputmode="numeric" pattern="d*(.d+)?">
+            </label>
+          </nav>
+          <nav class="br2 ma1 shadow-2 flex flex-column items-center pointer">
+            <span class="b mv4">H</span>
+            <label class="bt b--moon-gray tc">
+              <svg class="pv1 o-20" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <input class="bn tc w3" type="text" inputmode="numeric" pattern="d*(.d+)?">
+            </label>
+          </nav>
+          <nav class="br2 ma1 shadow-2 flex flex-column items-center pointer">
+            <span class="b mv4">J</span>
+            <label class="bt b--moon-gray tc">
+              <svg class="pv1 o-20" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <input class="bn tc w3" type="text" inputmode="numeric" pattern="d*(.d+)?">
+            </label>
+          </nav>
+        </div>
       </div>
-      <form netlify name="poly" id="poly" class="hidden">
-        <h2>coming soon...</h2>
-        <input class="box" type="email" placeholder="you@email.com" required>
-        <button class="box" type="submit">join waitlist</button>
-        <p>No spam—maybe even nothing at all. I'll only use your email when I have another music/tech thing to announce.</p>
-      </form>
-    </main>
-  </div>
+    </div>
+
+    <form netlify name="poly" id="poly" class="dn">
+      <h2>Coming soon...</h2>
+      <input class="pa2 br2 w-100 mb3 ba b--moon-gray tc" type="email" placeholder="you@email.com" required>
+      <button class="pa2 br2 w-100 b white bg-dark-red bn shadow-2" type="submit">Join Waitlist</button>
+      <p>No spam—maybe even nothing at all. I'll only use your email when I have another music+tech thing to announce.</p>
+    </form>
+  </main>
   <script src="script.js"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
 </body>

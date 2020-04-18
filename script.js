@@ -1,9 +1,9 @@
 const params = new URLSearchParams(location.search);
-const voices = document.querySelector("select");
-const left = document.querySelector(".left");
-const search = document.querySelector(".search input");
-const inputs = document.querySelectorAll(".controls input");
-const controls = document.querySelectorAll(".controls nav");
+const voices = document.getElementById("voices");
+const player = document.getElementById("player").parentNode;
+const search = document.getElementById("search");
+const inputs = document.querySelectorAll("#controls input");
+const controls = document.querySelectorAll("#controls nav");
 const holding = {};
 const keys = [ "a", "w", "s", "e", "d", "f", "t", "g", "y", "h", "u", "j" ];
 
@@ -12,7 +12,7 @@ voices.addEventListener("change", function() {
   for (const option of voices.children)
     document
       .getElementById(option.value)
-      .classList.toggle("hidden", !option.selected);
+      .classList.toggle("dn", !option.selected);
 });
 
 for (const i of inputs) {
@@ -24,8 +24,8 @@ for (const i of inputs) {
 function onYouTubeIframeAPIReady() {
   new YT.Player("player", {
     events: { onStateChange, onReady },
-    width: left.clientWidth,
-    height: left.clientHeight,
+    width: player.clientWidth,
+    height: player.clientHeight,
     videoId: params.get("id") || search.placeholder,
     playerVars: { disablekb: 1, modestbranding: 1 },
   });
@@ -40,45 +40,45 @@ function onStateChange(event) {
 }
 
 function onReady(event) {
-  const player = event.target;
-  startBuffering(player);
-  window.addEventListener("resize", () => onResize(player));
+  const video = event.target;
+  startBuffering(video);
+  window.addEventListener("resize", () => onResize(video));
 
   // Update URL and video on search change
   search.addEventListener("input", function(event) {
-    player.loadVideoById(search.value || search.placeholder);
-    startBuffering(player);
+    video.loadVideoById(search.value || search.placeholder);
+    startBuffering(video);
     setParam("id", search.value);
   });
 
   // MIDI listeners
-  window.addEventListener("keydown", event => onFakeMidi(event, player, 144, 100));
-  window.addEventListener("keyup", event => onFakeMidi(event, player, 128, 0));
+  window.addEventListener("keydown", event => onFakeMidi(event, video, 144, 100));
+  window.addEventListener("keyup", event => onFakeMidi(event, video, 128, 0));
   window.navigator
     && typeof window.navigator.requestMIDIAccess === "function"
     && navigator.requestMIDIAccess().then(function(midi) {
       for(const input of midi.inputs.values())
-        input.onmidimessage = event => onMidi(player, Array.from(event.data), event.timeStamp);
+        input.onmidimessage = event => onMidi(video, Array.from(event.data), event.timeStamp);
     });
 }
 
-function onResize(player) {
-  player.setSize(left.clientWidth, left.clientHeight);
+function onResize(video) {
+  video.setSize(player.clientWidth, player.clientHeight);
 }
 
 // It seems there's no explicit way to load a video,
 // so instead we mute the video and start playing it immediately.
 // YouTube will lazily load the video as it plays.
-function startBuffering(player) {
-  player.mute();
-  player.playVideo();
+function startBuffering(video) {
+  video.mute();
+  video.playVideo();
 }
 
 // Use the keyboard as a backup MIDI controller — GarageBand layout
-function onFakeMidi(event, player, status, velocity) {
+function onFakeMidi(event, video, status, velocity) {
   const index = keys.indexOf(event.key);
   if (index !== -1 && !event.repeat && event.target.nodeName !== "INPUT")
-    onMidi(player, [ status, index, velocity ], performance.now());
+    onMidi(video, [ status, index, velocity ], performance.now());
 }
 
 function hold(i, toggle) {
@@ -88,21 +88,21 @@ function hold(i, toggle) {
 }
 
 // Make it a playable instrument!
-function onMidi(player, data, time) {
+function onMidi(video, data, time) {
   if (data.length === 3 && data[0] >> 4 === 8) {
     // NOTE OFF
     const note = hold(data[1], false);
     controls[note].classList.remove("pressed");
     if (!Object.values(holding).includes(true))
-      player.mute();
+      video.mute();
 
   } else if (data.length === 3 && data[0] >> 4 === 9) {
     // NOTE ON
     const note = hold(data[1], true);
     controls[note].classList.add("pressed");
-    player.seekTo(getValue(inputs[note]), true);
-    player.unMute();
-    player.playVideo();
+    video.seekTo(getValue(inputs[note]), true);
+    video.unMute();
+    video.playVideo();
   }
 }
 
