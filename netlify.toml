@@ -1,3 +1,3 @@
 [build]
-  command = "mv *.{html,css,js} assets"
+  command = "mv *.{html,js} assets"
   publish = "assets"
