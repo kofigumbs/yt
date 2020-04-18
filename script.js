@@ -59,12 +59,12 @@ function onReady(event) {
   // Key listeners
   for (const control of Object.values(controls)) {
     control.container.addEventListener("pointerdown", function(event) {
-      event.preventDefault();
-      onFakeMidi({ key: control.key, target: event.target }, video, 144, 100);
+      event.key = control.key;
+      onFakeMidi(event, video, 144, 100);
     });
     control.container.addEventListener("pointerup", function(event) {
-      event.preventDefault();
-      onFakeMidi({ key: control.key, target: event.target }, video, 128, 0);
+      event.key = control.key;
+      onFakeMidi(event, video, 128, 0);
     });
   }
   window.addEventListener("keydown", event => onFakeMidi(event, video, 144, 100));
@@ -95,8 +95,10 @@ function startBuffering(video) {
 // Use the keyboard as a backup MIDI controller — GarageBand layout
 function onFakeMidi(event, video, status, velocity) {
   const control = controls[event.key];
-  if (control && !event.repeat && event.target.nodeName !== "INPUT")
+  if (control && !event.repeat && event.target.nodeName !== "INPUT") {
+    event.preventDefault();
     onMidi(video, [ status, control.index, velocity ]);
+  }
 }
 
 function hold(i, toggle) {
