@@ -1,19 +1,34 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+  <title>YT—mono</title>
+
+  <link rel="canonical" href="https://yt.kofi.sexy/">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#b31217">
+  <link rel="stylesheet" href="https://twcv.netlify.app/tachyons-with-css-variables.min.css"/>
+
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="theme-color" content="#ffffff">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
-  <link rel="stylesheet" href="https://twcv.netlify.app/tachyons-with-css-variables.min.css"/>
+  <meta name="description" content="A monophonic sampler for playing a YouTube video like an instrument" />
+  <meta property="og:description" content="A monophonic sampler for playing a YouTube video like an instrument" />
+  <meta property="og:url" content="https://kofi.sexy/">
+  <meta name="twitter:card" content="summary">
+  <meta property="twitter:title" content="YT—mono">
+  <meta name="twitter:site" content="@hkgumbs">
+  <meta name="twitter:creator" content="@hkgumbs">
+
   <style>
-    /* Tachyons customizations
-     */
     :root {
-      --dark-red:  #B31217;
+      --dark-red:  #B31217; /* Customizes Tachyons */
       --animation: 150ms;
     }
 
-    /* App-specific
-     */
     *[data-key]::after {
       content: attr(data-key);
       font-weight: 800;
@@ -33,15 +48,6 @@
       100% { opacity: 1; transform: translateY(0)    }
     }
   </style>
-
-  <title>YT—mono</title>
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#b31217">
-  <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="theme-color" content="#ffffff">
 </head>
 
 <body class="sans-serif">
@@ -88,7 +94,7 @@
         <input id="search" class="w4 bt-0 br-0 bl-0 bb b--moon-gray tc" placeholder="GxZuq57_bYM">
       </label>
 
-      <div class="overflow-scroll">
+      <div class="overflow-scroll overflow-visible-l">
         <div class="inline-flex">
           <span class="mh3 p2"></span>
           <figure data-key="w" class="br2 ma1 shadow-2 white bg-black-80 flex flex-column items-center pointer transition">
