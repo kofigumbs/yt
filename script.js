@@ -56,7 +56,17 @@ function onReady(event) {
     setParam("id", search.value);
   });
 
-  // MIDI listeners
+  // Key listeners
+  for (const control of Object.values(controls)) {
+    control.container.addEventListener("pointerdown", function(event) {
+      event.preventDefault();
+      onFakeMidi({ key: control.key, target: event.target }, video, 144, 100);
+    });
+    control.container.addEventListener("pointerup", function(event) {
+      event.preventDefault();
+      onFakeMidi({ key: control.key, target: event.target }, video, 128, 0);
+    });
+  }
   window.addEventListener("keydown", event => onFakeMidi(event, video, 144, 100));
   window.addEventListener("keyup", event => onFakeMidi(event, video, 128, 0));
   window.navigator
@@ -66,7 +76,7 @@ function onReady(event) {
 
 function onMidiAccess(midi) {
   for(const input of midi.inputs.values())
-    input.onmidimessage = event => onMidi(video, Array.from(event.data), event.timeStamp);
+    input.onmidimessage = event => onMidi(video, Array.from(event.data));
   midi.onstatechange = () => onMidiAccess(midi);
 }
 
@@ -86,7 +96,7 @@ function startBuffering(video) {
 function onFakeMidi(event, video, status, velocity) {
   const control = controls[event.key];
   if (control && !event.repeat && event.target.nodeName !== "INPUT")
-    onMidi(video, [ status, control.index, velocity ], performance.now());
+    onMidi(video, [ status, control.index, velocity ]);
 }
 
 function hold(i, toggle) {
@@ -96,7 +106,7 @@ function hold(i, toggle) {
 }
 
 // Make it a playable instrument!
-function onMidi(video, data, time) {
+function onMidi(video, data) {
   if (data.length === 3 && data[0] >> 4 === 8) {
     // NOTE OFF
     const note = hold(data[1], false);
