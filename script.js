@@ -58,17 +58,12 @@ function onReady(event) {
 
   // Key listeners
   for (const control of Object.values(controls)) {
-    control.container.addEventListener("pointerdown", function(event) {
-      event.key = control.key;
-      onFakeMidi(event, video, 144, 100);
-    });
-    control.container.addEventListener("pointerup", function(event) {
-      event.key = control.key;
-      onFakeMidi(event, video, 128, 0);
-    });
+    control.container.addEventListener("pointerdown", event => onFakeMidiOn (event, control.key, video));
+    control.container.addEventListener("pointerup",   event => onFakeMidiOff(event, control.key, video));
+    control.container.addEventListener("pointerout",  event => onFakeMidiOff(event, control.key, video));
   }
-  window.addEventListener("keydown", event => onFakeMidi(event, video, 144, 100));
-  window.addEventListener("keyup", event => onFakeMidi(event, video, 128, 0));
+  window.addEventListener("keydown", event => onFakeMidiOn (event, event.key, video));
+  window.addEventListener("keyup",   event => onFakeMidiOff(event, event.key, video));
   window.navigator
     && typeof window.navigator.requestMIDIAccess === "function"
     && navigator.requestMIDIAccess().then(onMidiAccess);
@@ -93,18 +88,14 @@ function startBuffering(video) {
 }
 
 // Use the keyboard as a backup MIDI controller — GarageBand layout
-function onFakeMidi(event, video, status, velocity) {
-  const control = controls[event.key];
+function onFakeMidiOn (event, key, video) { onFakeMidi(event, key, video, 144, 100) }
+function onFakeMidiOff(event, key, video) { onFakeMidi(event, key, video, 128,   0) }
+function onFakeMidi(event, key, video, status, velocity) {
+  const control = controls[key];
   if (control && !event.repeat && event.target.nodeName !== "INPUT") {
     event.preventDefault();
     onMidi(video, [ status, control.index, velocity ]);
   }
-}
-
-function hold(i, toggle) {
-  const note = i % 12;
-  holding[note] = toggle;
-  return note;
 }
 
 // Make it a playable instrument!
@@ -124,6 +115,12 @@ function onMidi(video, data) {
     video.unMute();
     video.playVideo();
   }
+}
+
+function hold(i, toggle) {
+  const note = i % 12;
+  holding[note] = toggle;
+  return note;
 }
 
 function getValue(input) {
