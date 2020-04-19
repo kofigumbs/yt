@@ -107,14 +107,14 @@ function onMidi(video, data) {
   if (data.length === 3 && data[0] >> 4 === 8) {
     // NOTE OFF
     const note = hold(data[1], false);
-    controls[note].container.classList.remove("pressed");
+    controls[note].container.classList.remove("active");
     if (!Object.values(holding).includes(true))
       video.mute();
 
   } else if (data.length === 3 && data[0] >> 4 === 9) {
     // NOTE ON
     const note = hold(data[1], true);
-    controls[note].container.classList.add("pressed");
+    controls[note].container.classList.add("active");
     video.seekTo(getValue(controls[note].input), true);
     video.unMute();
     video.playVideo();
