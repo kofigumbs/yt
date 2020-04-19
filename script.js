@@ -17,7 +17,11 @@ function setupControl(object, key, index) {
   return object;
 }
 
+// Restore input values from params
 search.value = params.get("id");
+for (const control of Object.values(controls))
+  control.input.value = params.get(control.key);
+
 voices.addEventListener("change", function() {
   for (const option of voices.children)
     document
