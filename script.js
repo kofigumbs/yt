@@ -70,13 +70,13 @@ function onReady(event) {
   window.addEventListener("keyup",   event => onFakeMidiOff(event, event.key, video));
   window.navigator
     && typeof window.navigator.requestMIDIAccess === "function"
-    && navigator.requestMIDIAccess().then(onMidiAccess);
+    && navigator.requestMIDIAccess().then(x => onMidiAccess(x, video));
 }
 
-function onMidiAccess(midi) {
+function onMidiAccess(midi, video) {
   for(const input of midi.inputs.values())
     input.onmidimessage = event => onMidi(video, Array.from(event.data));
-  midi.onstatechange = () => onMidiAccess(midi);
+  midi.onstatechange = () => onMidiAccess(midi, video);
 }
 
 function onResize(video) {
